@@ -1780,6 +1780,22 @@ tagmon(const Arg *arg)
 void
 tile(Monitor *m)
 {
+	/*
+	  1. We begin by getting the number of windows to tile: n.
+	     This is done in the first for loop.
+	     If n is 0, we do nothing.
+	  2. Next, we compute the width of the screen of the master panel: mw.
+	     If n is greater than the number of windows that belong in the master,
+	     mw equals the width of the monitor, ww, times the master factor, mfact.
+	     Otherwise, it is the full width of the monitor.
+	  3. Next, we iterate through each of the windows to tile.
+	     i is the index of the current client to tile.
+	     If i < nmaster, the window belongs to the master.
+	     Remember: resize(client, x, y, width, height, interact)
+	     We resize and position the window accordingly.
+	     Otherwise, the client belongs to the stack.
+	     Again, we resize and position the window accordingly.
+	*/
 	unsigned int i, n, h, mw, my, ty;
 	Client *c;
 
