@@ -12,6 +12,9 @@ static const char col_white[]          = "#ffffff";
 static const char col_red[]            = "#ff0000";
 static const char col_purple[]         = "#4b0082";
 static const char col_blue[]           = "#0025ff";
+static const char col_yellow[]         = "#ffff00";
+static const char col_green[]          = "#00ff00";
+static const char col_light_purple[]   = "#9400d3";
 static const char col_gray[]           = "#585858";
 static const char *colors[][3]         = {
 	/*                  fg         bg          border   */
@@ -20,6 +23,12 @@ static const char *colors[][3]         = {
 	[SchemeTag]     = { col_white, col_red,    col_blue  },
 	[SchemeLayout]  = { col_white, col_purple, col_blue  },
 	[SchemeStatus]  = { col_white, col_purple, col_blue  },
+};
+static const char *focuscolors[] = {
+	col_yellow,
+	col_green,
+	col_blue,
+	col_light_purple,
 };
 
 /* tagging */

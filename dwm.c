@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <X11/cursorfont.h>
@@ -268,6 +269,7 @@ static Atom wmatom[WMLast], netatom[NetLast];
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
+static Clr *focusscheme;
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -860,9 +862,9 @@ focus(Client *c)
 		grabbuttons(c, 1);
 		/* Avoid flickering when another client appears and the border
 		 * is restored */
-		if (!solitary(c)) {
-			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
-		}
+		// if (!solitary(c)) {
+			XSetWindowBorder(dpy, c->win, focusscheme[rand() % LENGTH(focuscolors)].pixel);
+		// }
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1174,12 +1176,12 @@ maprequest(XEvent *e)
 void
 monocle(Monitor *m)
 {
-	unsigned int n = 0;
+	// unsigned int n = 0;
 	Client *c;
 
-	for (c = m->clients; c; c = c->next)
-		if (ISVISIBLE(c))
-			n++;
+	// for (c = m->clients; c; c = c->next)
+	// 	if (ISVISIBLE(c))
+	// 		n++;
 	if (n > 0) /* override layout symbol */
 		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
@@ -1663,6 +1665,9 @@ setup(void)
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
 		scheme[i] = drw_scm_create(drw, colors[i], 3);
+	focusscheme = ecalloc(LENGTH(focuscolors), sizeof(XftColor));
+	for (i = 0; i < LENGTH(focuscolors); i++)
+		drw_clr_create(drw, &focusscheme[i], focuscolors[i]);
 	/* init bars */
 	updatebars();
 	updatestatus();
@@ -1687,6 +1692,7 @@ setup(void)
 	XSelectInput(dpy, root, wa.event_mask);
 	grabkeys();
 	focus(NULL);
+	srand(time(NULL));
 }
 
 void
