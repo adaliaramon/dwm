@@ -15,20 +15,25 @@ static const char col_blue[]           = "#0025ff";
 static const char col_yellow[]         = "#ffff00";
 static const char col_green[]          = "#00ff00";
 static const char col_light_purple[]   = "#9400d3";
+static const char col_orange[]         = "#ff9f00";
+static const char col_dark_orange[]    = "#ff3f00";
+static const char col_pink[]           = "#ff55ff";
 static const char col_gray[]           = "#585858";
 static const char *colors[][3]         = {
-	/*                  fg         bg          border   */
-	[SchemeNorm]    = { col_gray,  col_black,  col_gray  },
-	[SchemeSel]     = { col_white, col_blue,   col_blue  },
-	[SchemeTag]     = { col_white, col_red,    col_blue  },
-	[SchemeLayout]  = { col_white, col_purple, col_blue  },
-	[SchemeStatus]  = { col_white, col_purple, col_blue  },
+	/*                  fg         bg               border   */
+	[SchemeNorm]    = { col_gray,  col_black,       col_gray  },
+	[SchemeSel]     = { col_white, col_blue,        col_blue  },
+	[SchemeTag]     = { col_white, col_dark_orange, col_blue  },
+	[SchemeLayout]  = { col_white, col_purple,      col_blue  },
+	[SchemeStatus]  = { col_gray,  col_black,       col_blue  },
 };
 static const char *focuscolors[] = {
 	col_yellow,
 	col_green,
 	col_blue,
 	col_light_purple,
+	col_orange,
+	col_pink,
 };
 
 /* tagging */
