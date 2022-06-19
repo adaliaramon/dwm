@@ -19,6 +19,7 @@ static const char *colors[][3]         = {
 	[SchemeSel]     = { col_white, col_blue,   col_blue  },
 	[SchemeTag]     = { col_white, col_red,    col_blue  },
 	[SchemeLayout]  = { col_white, col_purple, col_blue  },
+	[SchemeStatus]  = { col_white, col_purple, col_blue  },
 };
 
 /* tagging */
