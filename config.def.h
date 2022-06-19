@@ -17,6 +17,7 @@ static const char col_green[]          = "#00ff00";
 static const char col_light_purple[]   = "#9400d3";
 static const char col_orange[]         = "#ff9f00";
 static const char col_dark_orange[]    = "#ff3f00";
+static const char col_pink[]           = "#ff55ff";
 static const char col_gray[]           = "#585858";
 static const char *colors[][3]         = {
 	/*                  fg         bg               border   */
@@ -32,6 +33,7 @@ static const char *focuscolors[] = {
 	col_blue,
 	col_light_purple,
 	col_orange,
+	col_pink,
 };
 
 /* tagging */
