@@ -9,12 +9,16 @@ static const char *fonts[]             = { "Roboto-Regular:size=12" };
 static const char dmenufont[]          = "Roboto-Regular:size=12";
 static const char col_black[]          = "#000000";
 static const char col_white[]          = "#ffffff";
+static const char col_red[]            = "#ff0000";
+static const char col_purple[]         = "#4b0082";
 static const char col_blue[]           = "#0025ff";
 static const char col_gray[]           = "#585858";
 static const char *colors[][3]         = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray,  col_black, col_gray  },
-	[SchemeSel]  = { col_white, col_blue,  col_blue  },
+	/*                  fg         bg          border   */
+	[SchemeNorm]    = { col_gray,  col_black,  col_gray  },
+	[SchemeSel]     = { col_white, col_blue,   col_blue  },
+	[SchemeTag]     = { col_white, col_red,    col_blue  },
+	[SchemeLayout]  = { col_white, col_purple, col_blue  },
 };
 
 /* tagging */
