@@ -268,6 +268,7 @@ static Atom wmatom[WMLast], netatom[NetLast];
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
+static Clr *focusscheme;
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -861,7 +862,7 @@ focus(Client *c)
 		/* Avoid flickering when another client appears and the border
 		 * is restored */
 		if (!solitary(c)) {
-			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
+			XSetWindowBorder(dpy, c->win, focusscheme[rand() % LENGTH(focuscolors)].pixel);
 		}
 		setfocus(c);
 	} else {
@@ -1652,6 +1653,9 @@ setup(void)
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
 		scheme[i] = drw_scm_create(drw, colors[i], 3);
+	focusscheme = ecalloc(LENGTH(focuscolors), sizeof(XftColor));
+	for (i = 0; i < LENGTH(focuscolors); i++)
+		drw_clr_create(drw, &focusscheme[i], focuscolors[i]);
 	/* init bars */
 	updatebars();
 	updatestatus();
