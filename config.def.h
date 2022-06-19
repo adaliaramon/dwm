@@ -24,7 +24,7 @@ static const char *colors[][3]         = {
 	[SchemeSel]     = { col_white, col_blue,        col_blue  },
 	[SchemeTag]     = { col_white, col_dark_orange, col_blue  },
 	[SchemeLayout]  = { col_white, col_purple,      col_blue  },
-	[SchemeStatus]  = { col_white, col_purple,      col_blue  },
+	[SchemeStatus]  = { col_gray,  col_black,       col_blue  },
 };
 static const char *focuscolors[] = {
 	col_yellow,
