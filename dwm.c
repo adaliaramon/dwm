@@ -862,9 +862,9 @@ focus(Client *c)
 		grabbuttons(c, 1);
 		/* Avoid flickering when another client appears and the border
 		 * is restored */
-		if (!solitary(c)) {
+		// if (!solitary(c)) {
 			XSetWindowBorder(dpy, c->win, focusscheme[rand() % LENGTH(focuscolors)].pixel);
-		}
+		// }
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1172,12 +1172,12 @@ maprequest(XEvent *e)
 void
 monocle(Monitor *m)
 {
-	unsigned int n = 0;
+	// unsigned int n = 0;
 	Client *c;
 
-	for (c = m->clients; c; c = c->next)
-		if (ISVISIBLE(c))
-			n++;
+	// for (c = m->clients; c; c = c->next)
+	// 	if (ISVISIBLE(c))
+	// 		n++;
 	// if (n > 0) /* override layout symbol */
 	// 	snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
