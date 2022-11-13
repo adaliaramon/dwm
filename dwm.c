@@ -117,6 +117,7 @@ struct Monitor {
 	char ltsymbol[16];
 	float mfact;
 	int nmaster;
+	int maxcols;
 	int num;
 	int by;               /* bar geometry */
 	int mx, my, mw, mh;   /* screen size */
@@ -178,6 +179,7 @@ static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
+static void incmaxcols(const Arg *arg);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
@@ -215,6 +217,7 @@ static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
+static void tile2(Monitor *m);
 static void togglebar(const Arg *arg);
 static void togglebarpos(const Arg *arg);
 static void togglefloating(const Arg *arg);
@@ -674,6 +677,7 @@ createmon(void)
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
 	m->nmaster = nmaster;
+	m->maxcols = maxcols;
 	m->showbar = showbar;
 	m->topbar = topbar;
 	m->lt[0] = &layouts[0];
@@ -1039,6 +1043,13 @@ grabkeys(void)
 							 GrabModeAsync, GrabModeAsync);
 		XFree(syms);
 	}
+}
+
+void
+incmaxcols(const Arg *arg)
+{
+	selmon->maxcols = MAX(selmon->maxcols + arg->i, 1);
+	arrange(selmon);
 }
 
 void
@@ -1823,6 +1834,42 @@ tile(Monitor *m)
 		} else {
 			h = (m->wh - ty) / (n - i);
 			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
+			if (ty + HEIGHT(c) < m->wh)
+				ty += HEIGHT(c);
+		}
+}
+
+void
+tile2(Monitor *m)
+{
+	unsigned int i, n, h, mw, my, ty, ncols, row, col;
+	Client *c;
+
+	// Count the number of clients to tile
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	// Compute the number of columns
+	for (ncols = 1; m->nmaster && ncols < m->maxcols && ncols * m->nmaster < n; ncols++);
+
+	// Compute the width of the master columns
+	mw = m->nmaster && m->maxcols > 1 && n > m->nmaster ? MIN(2 * m->ww * m->mfact / ncols, m->ww) : 0;
+
+	for (i = my = ty = row = col = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++, row++)
+		if (col < ncols - 1) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - row);
+			resize(c, m->wx + col * mw, m->wy + my, mw - 2 * c->bw, h - 2 * c->bw, 0);
+			if (my + HEIGHT(c) < m->wh)
+				my += HEIGHT(c);
+			else {
+				row = -1;
+				col++;
+				my = 0;
+			}
+		} else {
+			h = (m->wh - ty) / (n - i);
+			resize(c, m->wx + col * mw, m->wy + ty, m->ww - mw - 2 * c->bw, h - 2 * c->bw, 0);
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
