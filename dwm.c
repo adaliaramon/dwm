@@ -58,6 +58,7 @@
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
 #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
+#define BATTERY                 "/sys/class/power_supply/BAT1/capacity"
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -1475,9 +1476,18 @@ run(void)
 	XEvent ev;
 	/* main event loop */
 	XSync(dpy, False);
-	while (running && !XNextEvent(dpy, &ev))
-		if (handler[ev.type])
+    /* Declare lasttime to be used in updatestatus() */
+    time_t timer, lasttime = 0;
+	while (running) {
+		if (!XNextEvent(dpy, &ev) && handler[ev.type]) {
 			handler[ev.type](&ev); /* call handler */
+        }
+        timer = time(NULL);
+        if (timer - lasttime > 60) {
+            updatestatus();
+            lasttime = timer;
+        }
+    }
 }
 
 void
@@ -2178,7 +2188,17 @@ updatesizehints(Client *c)
 void
 updatestatus(void)
 {
-	gettextprop(root, XA_WM_NAME, stext, sizeof(stext));
+    FILE *fp;
+    time_t t;
+    struct tm *tm;
+
+    fp = fopen(BATTERY, "r");
+    if (fp == NULL)
+        die("Cannot open battery file");
+    fscanf(fp, "%s", stext);
+    time(&t);
+    tm = localtime(&t);
+    strftime(stext + strlen(stext), sizeof(stext) - strlen(stext), "% %d/%m/%Y %H:%M", tm);
 	drawbar(selmon);
 }
 
