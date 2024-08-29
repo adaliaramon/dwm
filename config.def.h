@@ -39,9 +39,10 @@ static const char *focuscolors[] = {
 
 /* status bar */
 static const Block blocks[] = {
-	/* fg        bg               command				interval	signal */
-	{ col_black, col_yellow, "cat /sys/class/power_supply/BAT1/capacity | xargs -I {} echo {}%",	5,		9},
-	{ col_white, col_dark_green,  "date '+%a %d/%m/%y %H:%M:%S'",	1,		10},
+	/* fg        bg               command				                                                        interval	signal */
+	{ col_white, col_red,         "free --mebi | awk '/^Mem:/ {printf \"%.2fGiB/%.2fGiB\", $3/1024, $2/1024}'",	1,		    8},
+	{ col_black, col_yellow,      "cat /sys/class/power_supply/BAT1/capacity | xargs -I {} echo {}%",	        15,		    9},
+	{ col_white, col_dark_green,  "date '+%a %d/%m/%y %H:%M:%S'",	                                            1,		    10},
 };
 
 /* inverse the order of the blocks, comment to disable */
