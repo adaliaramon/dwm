@@ -146,7 +146,8 @@ typedef struct {
 } Rule;
 
 typedef struct {
-	const char *color;
+	const char *fgcol;
+	const char *bgcol;
 	const char *command;
 	const unsigned int interval;
 	const unsigned int signal;
@@ -513,7 +514,7 @@ buttonpress(XEvent *e)
 			{
 				if (*blockoutput[i] == '\0') /* ignore command that output NULL or '\0' */
 					continue;
-				len = TEXTW(blockoutput[i]) - lrpad + TEXTW(delimiter) - lrpad;
+				len = TEXTW(blockoutput[i]) + TEXTW(delimiter) - lrpad;
 				x += len;
 				if (ev->x <= x && ev->x >= x - len) { /* if the mouse is between the block area */
 					blocknum = i; /* store what block the mouse is clicking */
@@ -1062,11 +1063,9 @@ int
 getstatus(int width)
 {
 	int i, len, all = width, delimlen = TEXTW(delimiter) - lrpad;
-	char fgcol[8];
+	char fgcol[8], bgcol[8];
 				/* fg		bg */
-	const char *cols[8] = 	{ fgcol, colors[SchemeStatus][ColBg] };
-	//uncomment to inverse the colors
-	//const char *cols[8] = 	{ colors[SchemeStatus][ColBg], fgcol };
+	const char *cols[8] = 	{ fgcol, bgcol };
 
 	#if INVERSED
 	for (i = 0; i < LENGTH(blocks); i++)
@@ -1076,13 +1075,14 @@ getstatus(int width)
 	{
 		if (*blockoutput[i] == '\0') /* ignore command that output NULL or '\0' */
 			continue;
-		strncpy(fgcol, blocks[i].color, 8);
+		strncpy(fgcol, blocks[i].fgcol, 8);
+		strncpy(bgcol, blocks[i].bgcol, 8);
 		/* re-load the scheme with the new colors */
 		scheme[SchemeStatus] = drw_scm_create(drw, cols, 3);
 		drw_setscheme(drw, scheme[SchemeStatus]); /* 're-set' the scheme */
-		len = TEXTW(blockoutput[i]) - lrpad;
+		len = TEXTW(blockoutput[i]);
 		all -= len;
-		drw_text(drw, all, 0, len, bh, 0, blockoutput[i], 0);
+		drw_text(drw, all, 0, len, bh, lrpad / 2, blockoutput[i], 0);
 		/* draw delimiter */
 		if (*delimiter == '\0') /* ignore no delimiter */
 			continue;

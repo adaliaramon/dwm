@@ -14,6 +14,7 @@ static const char col_purple[]         = "#4b0082";
 static const char col_blue[]           = "#0025ff";
 static const char col_yellow[]         = "#ffff00";
 static const char col_green[]          = "#00ff00";
+static const char col_dark_green[]     = "#008300";
 static const char col_light_purple[]   = "#9400d3";
 static const char col_orange[]         = "#ff9f00";
 static const char col_dark_orange[]    = "#ff3f00";
@@ -38,15 +39,15 @@ static const char *focuscolors[] = {
 
 /* status bar */
 static const Block blocks[] = {
-	/* fg     command				interval	signal */
-	{ col_gray, "cat /sys/class/power_supply/BAT1/capacity | xargs -I {} echo {}%",	5,		9},
-	{ col_gray, "date '+%a %d/%m/%y %H:%M:%S'",	1,		10},
+	/* fg        bg               command				interval	signal */
+	{ col_black, col_yellow, "cat /sys/class/power_supply/BAT1/capacity | xargs -I {} echo {}%",	5,		9},
+	{ col_white, col_dark_green,  "date '+%a %d/%m/%y %H:%M:%S'",	1,		10},
 };
 
 /* inverse the order of the blocks, comment to disable */
 #define INVERSED 0
 /* delimeter between blocks commands. NULL character ('\0') means no delimeter. */
-static char delimiter[] = " ";
+static char delimiter[] = "";
 /* max number of character that one block command can output */
 #define CMDLENGTH 50
 
