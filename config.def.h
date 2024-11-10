@@ -79,6 +79,10 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char highPriority[] = "chromium,librewolf,tenacity,pycharm,idea,teams,yuzu,sneedacity";
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_black, "-nf", col_gray, "-sb", col_black, "-sf", col_white, "-hp", highPriority, NULL};
 static const char *termcmd[]  = { "alacritty", NULL };
+static const char *upbrightness[]   = { "backlight", "+10%", NULL };
+static const char *downbrightness[] = { "backlight", "-10%", NULL };
+static const char *incvol[] = {"amixer", "set", "Master", "5%+", NULL};
+static const char *decvol[] = {"amixer", "set", "Master", "5%-", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -118,6 +122,10 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ 0,            XF86XK_MonBrightnessUp,    spawn,          {.v = upbrightness } },
+	{ 0,            XF86XK_MonBrightnessDown,  spawn,          {.v = downbrightness } },
+	{ 0,				XF86XK_AudioLowerVolume,spawn,{.v = decvol} },
+	{ 0,				XF86XK_AudioRaiseVolume,spawn,{.v = incvol} },
 };
 
 /* button definitions */
