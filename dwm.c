@@ -1530,6 +1530,7 @@ sendmon(Client *c, Monitor *m)
 	attachstack(c);
 	focus(NULL);
 	arrange(NULL);
+	restack(m); /* raise sent client on target monitor (monocle) */
 }
 
 void
