@@ -134,6 +134,8 @@ struct Monitor {
 	Monitor *next;
 	Window barwin;
 	const Layout *lt[2];
+	unsigned int curtag;  /* tag whose layout is live in lt/sellt */
+	struct { const Layout *lt[2]; unsigned int sellt; } taglt[32];
 };
 
 typedef struct {
@@ -208,6 +210,7 @@ static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setlayout(const Arg *arg);
+static void tagslotswitch(Monitor *m);
 static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
@@ -673,6 +676,7 @@ Monitor *
 createmon(void)
 {
 	Monitor *m;
+	unsigned int i;
 
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset[0] = m->tagset[1] = 1;
@@ -684,6 +688,10 @@ createmon(void)
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
+	for (i = 0; i < LENGTH(m->taglt); i++) {
+		m->taglt[i].lt[0] = m->lt[0];
+		m->taglt[i].lt[1] = m->lt[1];
+	}
 	return m;
 }
 
@@ -1598,6 +1606,22 @@ setfullscreen(Client *c, int fullscreen)
 	}
 }
 
+/* swap in the layout of the lowest selected tag; call after tagset changes */
+void
+tagslotswitch(Monitor *m)
+{
+	unsigned int t = __builtin_ctz(m->tagset[m->seltags]);
+
+	m->taglt[m->curtag].lt[0] = m->lt[0];
+	m->taglt[m->curtag].lt[1] = m->lt[1];
+	m->taglt[m->curtag].sellt = m->sellt;
+	m->curtag = t;
+	m->lt[0] = m->taglt[t].lt[0];
+	m->lt[1] = m->taglt[t].lt[1];
+	m->sellt = m->taglt[t].sellt;
+	strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof m->ltsymbol);
+}
+
 void
 setlayout(const Arg *arg)
 {
@@ -1930,6 +1954,7 @@ toggleview(const Arg *arg)
 
 	if (newtagset) {
 		selmon->tagset[selmon->seltags] = newtagset;
+		tagslotswitch(selmon);
 		focus(NULL);
 		arrange(selmon);
 	}
@@ -2231,6 +2256,7 @@ view(const Arg *arg)
 	selmon->seltags ^= 1; /* toggle sel tagset */
 	if (arg->ui & TAGMASK)
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+	tagslotswitch(selmon);
 	focus(NULL);
 	arrange(selmon);
 }
